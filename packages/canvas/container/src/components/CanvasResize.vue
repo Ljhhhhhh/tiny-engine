@@ -10,7 +10,7 @@
   </div>
 </template>
 <script>
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useLayout, useCanvas } from '@opentiny/tiny-engine-meta-register'
 import { canvasState } from '../container'
 
@@ -90,14 +90,36 @@ export default {
       })
     }
 
+    const draggablePanel = ref(null)
+    watch(() => useLayout().getPluginWidth(draggablePanel.value), setScale, { flush: 'post' })
+
     watch(() => useLayout().getDimension().width, setScale, { flush: 'post', immediate: true })
 
-    watch(() => useLayout().getPluginState().fixedPanels, setScale, { flush: 'post' })
+    watch(() => useLayout().leftFixedPanelsStorage.value, setScale, { flush: 'post' })
 
     watch(
       () => useLayout().getPluginState().render,
       (value) => {
         const currentFixed = useLayout().getPluginState().fixedPanels.includes(value)
+        const isPanelResizable = useLayout().isPanelWidthResizable(value)
+
+        if (isPanelResizable) {
+          draggablePanel.value = value
+        }
+
+        if (!value || currentFixed) {
+          setScale()
+        }
+      },
+      { flush: 'post' }
+    )
+
+    watch(() => useLayout().rightFixedPanelsStorage.value, setScale, { flush: 'post' })
+
+    watch(
+      () => useLayout().getSettingState().render,
+      (value) => {
+        const currentFixed = useLayout().rightFixedPanelsStorage.value.includes(value)
 
         if (!value || currentFixed) {
           setScale()
@@ -114,6 +136,18 @@ export default {
         })
       }
     )
+
+    const handleResize = () => {
+      setScale()
+    }
+
+    onMounted(() => {
+      window.addEventListener('resize', handleResize)
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', handleResize)
+    })
 
     return {
       onMouseDown,

@@ -37,7 +37,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, defineEmits, defineProps, ref } from 'vue'
 import LayerLines from './LayerLines.vue'
 
@@ -112,7 +112,7 @@ const nodesMap = computed(() => {
 })
 
 const filteredNodes = computed(() => {
-  return nodes.value.filter((node) => node.label.toLowerCase().includes(props.filterValue))
+  return nodes.value.filter((node) => node.label.toLowerCase().includes(props.filterValue.toLowerCase()))
 })
 
 const getAncestorIds = (nodeId) => {

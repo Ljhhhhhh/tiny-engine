@@ -111,7 +111,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { ref, onMounted, watchEffect } from 'vue'
 import { TinyLayout, TinyRow, TinyCol, TinyButton, TinyInput, Notify, Loading, TinyPopover } from '@opentiny/vue'
 import { useCanvas, useHistory, usePage, useModal, getMetaApi, META_SERVICE } from '@opentiny/tiny-engine-meta-register'
@@ -467,6 +467,7 @@ export default {
     display: flex;
     align-items: center;
     height: 24px;
+    cursor: pointer;
   }
   .chat-title-label,
   .ml8 {
@@ -573,7 +574,7 @@ export default {
   color: var(--te-chat-model-ai-fail-text);
 }
 
-.chat-submit {
+.chat-submit.chat-submit {
   margin-top: 14px;
   font-size: 14px;
   display: flex;
